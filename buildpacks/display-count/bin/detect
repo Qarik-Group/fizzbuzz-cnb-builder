@@ -1,0 +1,18 @@
+#!/bin/bash
+
+[[ -f Count ]] || { echo "No Count file"; exit 1; }
+
+plan=$2
+cat > "$plan" <<TOML
+[[provides]]
+name = "display-count"
+
+[[requires]]
+name = "display-count"
+
+[[or]]
+[[or.requires]]
+name = "fizz"
+[[or.requires]]
+name = "buzz"
+TOML
