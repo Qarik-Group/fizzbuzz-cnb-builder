@@ -6,9 +6,15 @@
 
 plan=$2
 cat > "$plan" <<TOML
-[[provides]]
-name = "buzz"
+# [[provides]]
+# name = "buzz"
+
+# [[requires]]
+# name = "buzz"
 
 [[requires]]
-name = "buzz"
+name = "display-count"
+
+[requires.metadata]
+message = "buzz"
 TOML
