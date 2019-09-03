@@ -68,6 +68,8 @@ Count  fizz
 
 ## Builder
 
+NOTE: `pack create-builder` requires `pack` v0.4.0+ or built from source. v0.3.0 will not work.
+
 ### Create builder with buildpacks
 
 ```plain
