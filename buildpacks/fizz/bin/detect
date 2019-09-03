@@ -1,0 +1,5 @@
+#!/bin/bash
+
+[[ -f Count ]] || { echo "No Count file"; exit 1; }
+
+[[ $(( $(cat Count) % 5 )) == "0" ]]
