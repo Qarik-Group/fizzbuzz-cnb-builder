@@ -13,16 +13,20 @@ echo "---> Plan from successful buildpacks"
 cat $plan
 
 echo "---> Create launch process to display count on start"
+cat > $layers/display-count.toml <<TOML
+launch = true
+TOML
+
 mkdir -p $layers/display-count/bin
 cat > $layers/display-count/bin/display-count <<SHELL
 #!/bin/bash
 
-pwd
 cat Count
 SHELL
+chmod +x $layers/display-count/bin/display-count
 
 cat > $layers/launch.toml <<TOML
 [[processes]]
 command = "display-count"
-type = "task"
+type = "web"
 TOML
