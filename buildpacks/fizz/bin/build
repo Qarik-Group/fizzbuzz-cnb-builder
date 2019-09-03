@@ -1,3 +1,13 @@
 #!/bin/bash
 
-exit 1
+set -eo pipefail
+
+# https://github.com/buildpack/spec/blob/master/buildpack.md#build
+
+echo "---> Fizz Buildpack"
+
+plan=$3
+cat $plan
+
+echo "---> Create fizz file"
+touch fizz

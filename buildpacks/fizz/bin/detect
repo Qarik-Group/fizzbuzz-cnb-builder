@@ -2,4 +2,13 @@
 
 [[ -f Count ]] || { echo "No Count file"; exit 1; }
 
-[[ $(( $(cat Count) % 5 )) == "0" ]]
+[[ $(( $(cat Count) % 3 )) == "0" ]] || { echo "Count not a multiple of 3"; exit 2; }
+
+plan=$2
+cat > "$plan" <<TOML
+[[provides]]
+name = "fizz"
+
+[[requires]]
+name = "fizz"
+TOML

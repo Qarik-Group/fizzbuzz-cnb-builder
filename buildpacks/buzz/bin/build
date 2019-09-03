@@ -1,3 +1,13 @@
 #!/bin/bash
 
-exit 0
+set -eo pipefail
+
+# https://github.com/buildpack/spec/blob/master/buildpack.md#build
+
+echo "---> Buzz Buildpack"
+
+plan=$3
+cat $plan
+
+echo "---> Create buzz file"
+touch buzz
