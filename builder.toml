@@ -15,11 +15,11 @@ description = "fizz buzz buildpack detection at its best"
 
   [[order.group]]
     id = "com.starkandwayne.buildpacks.playtime.fizz"
-    optional = false
+    optional = true
 
   [[order.group]]
     id = "com.starkandwayne.buildpacks.playtime.buzz"
-    optional = false
+    optional = true
 
 [stack]
   id = "org.cloudfoundry.stacks.cflinuxfs3"
