@@ -49,3 +49,20 @@ $ pack build playtime --buildpack buildpacks/fizz --path fixtures/three
 $ docker run -ti playtime ls -al
 Count  fizz
 ```
+
+## Builder
+
+### Create builder with buildpacks
+
+```plain
+pack create-builder starkandwayne/fizzbuzz-builder -b builder.toml
+```
+
+Test the various fixture apps on the builder:
+
+```plain
+pack build playtime --builder starkandwayne/fizzbuzz-builder --no-pull --path fixtures/fifteen
+pack build playtime --builder starkandwayne/fizzbuzz-builder --no-pull --path fixtures/five
+pack build playtime --builder starkandwayne/fizzbuzz-builder --no-pull --path fixtures/three
+pack build playtime --builder starkandwayne/fizzbuzz-builder --no-pull --path fixtures/one
+```
