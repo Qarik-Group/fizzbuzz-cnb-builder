@@ -1,5 +1,21 @@
 # FizzBuzz as buildpacks
 
+## Simple demo
+
+```plain
+mkdir -p ~/workspace/fizzbuzz-app
+cd ~/workspace/fizzbuzz-app
+
+echo 3 > Count
+pack build fizzbuzz-app --builder starkandwayne/fizzbuzz-builder
+
+echo 5 > Count
+pack build fizzbuzz-app --builder starkandwayne/fizzbuzz-builder
+
+echo 15 > Count
+pack build fizzbuzz-app --builder starkandwayne/fizzbuzz-builder
+```
+
 ## Test buildpacks without builder
 
 ```plain
