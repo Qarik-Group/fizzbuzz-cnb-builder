@@ -1,4 +1,4 @@
-# FizzBuzz as buildpacks
+# Solving FizzBuzz with Cloud Native Buildpacks
 
 ## Simple demo
 
