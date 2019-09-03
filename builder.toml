@@ -6,22 +6,20 @@ description = "fizz buzz buildpack detection at its best"
 [[buildpacks]]
   id = "com.starkandwayne.buildpacks.playtime.fizz"
   uri = "buildpacks/fizz"
-  version = "1.0.0"
 
 [[buildpacks]]
   id = "com.starkandwayne.buildpacks.playtime.buzz"
   uri = "buildpacks/buzz"
-  version = "1.0.0"
 
 [[order]]
 
   [[order.group]]
     id = "com.starkandwayne.buildpacks.playtime.fizz"
-    version = "1.0.0"
+    optional = false
 
   [[order.group]]
     id = "com.starkandwayne.buildpacks.playtime.buzz"
-    version = "1.0.0"
+    optional = false
 
 [stack]
   id = "org.cloudfoundry.stacks.cflinuxfs3"
