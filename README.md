@@ -3,6 +3,8 @@
 ## Test buildpacks without builder
 
 ```plain
+$ cat fixtures/fifteen/Count
+15
 $ pack build playtime --buildpack buildpacks/fizz --buildpack buildpacks/buzz --path fixtures/fifteen
 ===> DETECTING
 [detector] ======== Results ========
@@ -28,6 +30,8 @@ Count  buzz  fizz
 ```
 
 ```plain
+$ cat fixtures/three/Count
+3
 $ pack build playtime --buildpack buildpacks/fizz --path fixtures/three
 ===> DETECTING
 [detector] ======== Results ========
