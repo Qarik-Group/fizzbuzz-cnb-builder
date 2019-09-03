@@ -7,6 +7,6 @@ cat > "$plan" <<TOML
 [[provides]]
 name = "display-count"
 
-# [[requires]]
-# name = "display-count"
+[[requires]]
+name = "display-count"
 TOML

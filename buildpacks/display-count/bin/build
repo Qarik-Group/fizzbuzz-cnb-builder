@@ -4,13 +4,27 @@ set -eo pipefail
 
 # https://github.com/buildpack/spec/blob/master/buildpack.md#build
 
-echo "---> Display FizzBuzz Count Buildpack"
-
 layers=$1
 # platform=$2
 plan=$3
-echo "---> Plan from successful buildpacks"
-cat $plan
+
+echo "---> Display FizzBuzz Count Buildpack"
+
+if [[ -f $layers/tools.toml ]] ; then
+  echo "---> Reusing useful tools"
+else
+  echo "---> Download some useful tools"
+  rm -rf $layers/tools
+  mkdir -p $layers/tools/bin
+  wget -qO $layers/tools/bin/yj https://github.com/sclevine/yj/releases/download/v4.0.0/yj-linux && chmod +x $layers/tools/bin/yj
+  cat > "$layers/tools.toml" <<-TOML
+cache = true
+build = false
+launch = false
+yj = "4.0.0"
+TOML
+fi
+export PATH=$layers/tools/bin:$PATH
 
 echo "---> Create launch process to display count on start"
 cat > $layers/display-count.toml <<TOML
@@ -30,3 +44,17 @@ cat > $layers/launch.toml <<TOML
 command = "display-count"
 type = "web"
 TOML
+
+echo "---> Calculating fizz and buzz"
+fizzbuzz_message=$(cat $plan | yj -t | jq -r '.entries // [] | map(.metadata.message) | join("")')
+if [[ ${fizzbuzz_message:-X} == "X" ]]; then
+  echo "     No fizz, no buzz, all number"
+else
+  echo "     Expect some fizz or some buzz or both"
+  cat > $layers/display-count/bin/display-count <<SHELL
+#!/bin/bash
+
+echo "${fizzbuzz_message}"
+SHELL
+fi
+
