@@ -1,5 +1,7 @@
 # FizzBuzz as buildpacks
 
+## Test buildpacks without builder
+
 ```plain
 $ pack build playtime --buildpack buildpacks/fizz --buildpack buildpacks/buzz --path fixtures/fifteen
 ===> DETECTING
