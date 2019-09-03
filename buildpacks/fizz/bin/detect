@@ -2,7 +2,7 @@
 
 [[ -f Count ]] || { echo "No Count file"; exit 1; }
 
-[[ $(( $(cat Count) % 3 )) == "0" ]] || { echo "Count not a multiple of 3"; exit 2; }
+[[ $(( $(cat Count) % 3 )) == "0" ]] || { echo "Count not a multiple of 3"; exit 103; }
 
 plan=$2
 cat > "$plan" <<TOML

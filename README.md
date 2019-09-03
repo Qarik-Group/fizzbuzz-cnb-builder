@@ -97,7 +97,7 @@ $ pack build playtime --builder starkandwayne/fizzbuzz-builder --no-pull --path 
 [detector] ======== Output: com.starkandwayne.buildpacks.playtime.fizz@1.0.0 ========
 [detector] Count not a multiple of 3
 [detector] ======== Results ========
-[detector] err:  com.starkandwayne.buildpacks.playtime.fizz@1.0.0 (2)
+[detector] err:  com.starkandwayne.buildpacks.playtime.fizz@1.0.0 (103)
 [detector] pass: com.starkandwayne.buildpacks.playtime.buzz@1.0.0
 [detector] Resolving plan... (try #1)
 [detector] Success! (1)
@@ -121,7 +121,7 @@ $ pack build playtime --builder starkandwayne/fizzbuzz-builder --no-pull --path 
 [detector] Count not a multiple of 5
 [detector] ======== Results ========
 [detector] pass: com.starkandwayne.buildpacks.playtime.fizz@1.0.0
-[detector] err:  com.starkandwayne.buildpacks.playtime.buzz@1.0.0 (2)
+[detector] err:  com.starkandwayne.buildpacks.playtime.buzz@1.0.0 (105)
 [detector] Resolving plan... (try #1)
 [detector] Success! (1)
 ...
@@ -145,8 +145,8 @@ $ pack build playtime --builder starkandwayne/fizzbuzz-builder --no-pull --path 
 [detector] ======== Output: com.starkandwayne.buildpacks.playtime.buzz@1.0.0 ========
 [detector] Count not a multiple of 5
 [detector] ======== Results ========
-[detector] err:  com.starkandwayne.buildpacks.playtime.fizz@1.0.0 (2)
-[detector] err:  com.starkandwayne.buildpacks.playtime.buzz@1.0.0 (2)
+[detector] err:  com.starkandwayne.buildpacks.playtime.fizz@1.0.0 (103)
+[detector] err:  com.starkandwayne.buildpacks.playtime.buzz@1.0.0 (105)
 [detector] Resolving plan... (try #1)
 [detector] fail: no viable buildpacks in group
 [detector] Error: failed to detect: detection failed
