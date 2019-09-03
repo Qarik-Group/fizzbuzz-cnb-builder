@@ -4,6 +4,10 @@ description = "fizz buzz buildpack detection at its best"
   version = "0.4.0"
 
 [[buildpacks]]
+  id = "com.starkandwayne.buildpacks.playtime.display-count"
+  uri = "buildpacks/display-count"
+
+[[buildpacks]]
   id = "com.starkandwayne.buildpacks.playtime.fizz"
   uri = "buildpacks/fizz"
 
@@ -11,11 +15,11 @@ description = "fizz buzz buildpack detection at its best"
   id = "com.starkandwayne.buildpacks.playtime.buzz"
   uri = "buildpacks/buzz"
 
-[[buildpacks]]
-  id = "com.starkandwayne.buildpacks.playtime.display-count"
-  uri = "buildpacks/display-count"
-
 [[order]]
+
+  [[order.group]]
+    id = "com.starkandwayne.buildpacks.playtime.display-count"
+    optional = false
 
   [[order.group]]
     id = "com.starkandwayne.buildpacks.playtime.fizz"
@@ -24,10 +28,6 @@ description = "fizz buzz buildpack detection at its best"
   [[order.group]]
     id = "com.starkandwayne.buildpacks.playtime.buzz"
     optional = true
-
-  [[order.group]]
-    id = "com.starkandwayne.buildpacks.playtime.display-count"
-    optional = false
 
 [stack]
   id = "org.cloudfoundry.stacks.cflinuxfs3"
