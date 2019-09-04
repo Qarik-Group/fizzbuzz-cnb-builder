@@ -43,9 +43,6 @@ fi
 
 
 echo "---> Create launch process to display count on start"
-cat > $layers/display-count.toml <<TOML
-launch = true
-TOML
 
 # Binaries for launch and/or subsequent buildpacks
 mkdir -p $layers/display-count/bin
@@ -57,6 +54,11 @@ echo "\${FIZZBUZZ_MESSAGE:-$(cat Count)}"
 SHELL
 
 chmod +x $layers/display-count/bin/display-count
+
+
+cat > $layers/display-count.toml <<TOML
+launch = true
+TOML
 
 cat > $layers/launch.toml <<TOML
 [[processes]]
