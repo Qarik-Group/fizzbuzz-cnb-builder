@@ -144,6 +144,8 @@ $ docker inspect playtime
 
 ### `bin/detect`
 
+The first require executable of every CNB is `bin/detect`. It determines if this buildpack can be helpful to the provided application source code.
+
 If we ran the `pack build --buildpack buildpacks/display-count` command upon another folder that didn't have a `Count` file then the buildpack would alert and fail:
 
 ```plain
@@ -173,6 +175,66 @@ The `buildpacks/display-count/bin/detect` file shows how we did this with a shel
 ```
 
 The `bin/detect` script is run upon the provided application source folder, and we expect `Count` to exist in the root of this folder. If not, then the `display-count` buildpack cannot help this application.
+
+### bin/build
+
+The other required executable for every buildpack is `bin/build`. It can add a layer of software to the final image, can setup the runtime environment of running containers, can depend upon other buildpacks, and can propose a command to run when the OCI is launched.
+
+The `buildpacks/display-count/bin/build` file contains some important pieces worth calling out:
+
+```bash
+layers=$1
+plan=$3
+```
+
+The `bin/build` script will be invoked with three arguments provided:
+
+1. The directory where a new layer of software, and configuration can be added
+1. [omitted above] Directory containing custom environment variables passed into `pack build`
+1. Metadata passed from `bin/detect` of this buildpack, and potentially other buildpacks
+
+The buildpack creates an executable that prints out the `Count` value at runtime. A cutdown version of `bin/build` is below that creates a `display-count` executable:
+
+```bash
+cat > $layers/display-count/bin/display-count <<SHELL
+#!/bin/bash
+
+cat Count
+SHELL
+
+chmod +x $layers/display-count/bin/display-count
+```
+
+Note that `$layers/display-count/bin` will automatically be added to `$PATH` of each running container, so `display-count` executable will be automatically available in the `$PATH`. `chmod +x` marks the file as executable.
+
+Later, when we introduce the `fizz` and `buzz` buildpacks, our `bin/display-count` script above will become slightly more complicated.
+
+```bash
+cat > $layers/display-count.toml <<TOML
+launch = true
+TOML
+```
+
+This tells `pack build` that we want our work (the `bin/display-count` script for example) to be included in the final, launchable OCI.
+
+```bash
+cat > $layers/launch.toml <<TOML
+[[processes]]
+command = "display-count"
+type = "web"
+TOML
+```
+
+Finally, we propose a launch command for the OCI (unless a subsequent buildpack overrides our proposed `web` process).
+
+This means that our `docker run playtime` command above is ultimately running the `display-count` executable we created above.
+
+We can confirm that our previously built `playtime` image does indeed include a `display-count` executable that's in the `$PATH`, by explicitly running it:
+
+```bash
+$ docker run playtime display-count
+15
+```
 
 ## Test buildpacks without builder
 
