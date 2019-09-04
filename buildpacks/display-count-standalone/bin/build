@@ -5,26 +5,10 @@ set -eo pipefail
 # https://github.com/buildpack/spec/blob/master/buildpack.md#build
 
 layers=$1
-# platform=$2
-plan=$3
-
 buildpack_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 
 echo "---> Display FizzBuzz Count Buildpack"
 
-echo "---> Create launch process to display count on start"
+echo "---> Copy files from buildpack"
 
-# Binaries for launch and/or subsequent buildpacks
-mkdir -p $layers/display-count/bin
-cp $buildpack_dir/bin/display-count $layers/display-count/bin
-
-cat > $layers/display-count.toml <<TOML
-launch = true
-TOML
-
-cat > $layers/launch.toml <<TOML
-[[processes]]
-command = "display-count"
-type = "web"
-TOML
-
+cp -r $buildpack_dir/layer/* $layers/
