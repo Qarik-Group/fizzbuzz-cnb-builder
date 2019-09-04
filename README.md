@@ -26,6 +26,14 @@ But, if the `Count` value is a multiple of 3, then instead of printing the numbe
 
 Instead of determining to print a number, `fizz`, `buzz`, or `fizzbuzz` at runtime, we will make the decision at the time we build the application image. What will be printed will be hard baked into the image based on the source `Count` file.
 
+### Installing `pack` CLI
+
+In time you'll learn there are multiple ways to use Cloud Native Buildpacks to convert your source code into runnable application images. In this README we'll only use the `pack` CLI.
+
+Instructions for installation are at https://buildpacks.io/docs/install-pack/
+
+NOTE: you need `pack` 0.4.0 or pack from source.
+
 ### Simple demo
 
 Here is a working example that you can run now:
@@ -76,6 +84,7 @@ $ pack build playtime \
     --builder cloudfoundry/cnb:bionic \
     --buildpack buildpacks/display-count \
     --path fixtures/fifteen
+...
 Selected run image cloudfoundry/run:base-cnb
 fetching buildpack from buildpacks/display-count
 adding buildpack com.starkandwayne.buildpacks.playtime.display-count version 1.0.0 to builder
@@ -104,6 +113,18 @@ The local `playtime` image is runnable and displays the `Count` value from the `
 $ docker run playtime
 15
 ```
+
+Looking back at the output from `pack build` we see three stages: `DETECTING`, `BUILDING`, and `EXPORTING`. In the actual output there is also `RESTORING`, and `ANALYZING`, which we will not cover in this tutorial.
+
+The **Detecting** stage allows each buildpack (we only provided one in our example) to determine if it can perform any service or provide any assistance to this application.
+
+Each buildpack implements this with a `bin/detect` executable.
+
+The **Building** stage allows the selected buildpacks to inject a layer into the final OCI image, and to propose how the final runnable image should run.
+
+Each buildpack implements this with a `bin/build` executable.
+
+The **Exporting** stage generates an OCI, and optionally publishes to a registry for remote systems to use.
 
 ## Test buildpacks without builder
 
