@@ -4,11 +4,11 @@ set -eo pipefail
 
 # https://github.com/buildpack/spec/blob/master/buildpack.md#build
 
-layers=$1
+layer_dir=$1
 buildpack_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 
 echo "---> FizzBuzz Buildpack"
 
 echo "---> Copy files from buildpack"
 
-cp -r $buildpack_dir/layer/* $layers/
+cp -r $buildpack_dir/layer/* $layer_dir/

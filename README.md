@@ -2,6 +2,8 @@
 
 In this project and README I'm going to introduce you to Cloud Native Buildpacks using the silliest method for solving FizzBuzz. Yeah.
 
+This repo and tutorial are compliamentary to the official [Creating a Cloud Native Buildpack](https://buildpacks.io/docs/create-buildpack/) walk thru that is also highly recommended.
+
 ## FizzBuzz Coding Challenge
 
 Write a program that takes a sequence of numbers, 1, 2, 3. If the number is a multiple of three print "fizz", if the number is a multiple of five print "buzz", if its both print "fizzbuzz", or if its neither then print the number.
@@ -179,58 +181,31 @@ The `buildpacks/fizzbuzz-standalone/bin/detect` file shows how we did this with 
 
 The `bin/detect` script is run upon the provided application source folder, and we expect `Count` to exist in the root of this folder. If not, then the `display-count` buildpack cannot help this application.
 
-### bin/build TODO
+### bin/build
 
 The other required executable for every buildpack is `bin/build`. It can add a layer of software to the final image, can setup the runtime environment of running containers, can depend upon other buildpacks, and can propose a command to run when the OCI is launched.
 
-The `buildpacks/display-count/bin/build` file contains some important pieces worth calling out:
+Our `buildpacks/fizzbuzz-standalone/bin/build` is written to just copy a set of files into a new layer of the final runnable OCI/docker image. The three important lines are:
 
 ```bash
-layers=$1
-plan=$3
+layer_dir=$1
+buildpack_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+cp -r $buildpack_dir/layer/* $layer_dir/
 ```
 
-The `bin/build` script will be invoked with three arguments provided:
+TODO: [What about the application folder?] The "layer" directory, passed to `bin/build` as the first argument, is the only folder area that `bin/build` should modify.
 
-1. The directory where a new layer of software, and configuration can be added
-1. [omitted above] Directory containing custom environment variables passed into `pack build`
-1. Metadata passed from `bin/detect` of this buildpack, and potentially other buildpacks
+The files placed into `$layer_dir` are copied from the buildpack's `layer` folder:
 
-The buildpack creates an executable that prints out the `Count` value at runtime. A cutdown version of `bin/build` is below that creates a `display-count` executable:
-
-```bash
-cat > $layers/display-count/bin/display-count <<SHELL
-#!/bin/bash
-
-cat Count
-SHELL
-
-chmod +x $layers/display-count/bin/display-count
+```plain
+├── fizzbuzz
+│   └── bin
+│       └── display-count
+├── fizzbuzz.toml
+└── launch.toml
 ```
 
-Note that `$layers/display-count/bin` will automatically be added to `$PATH` of each running container, so `display-count` executable will be automatically available in the `$PATH`. `chmod +x` marks the file as executable.
-
-Later, when we introduce the `fizz` and `buzz` buildpacks, our `bin/display-count` script above will become slightly more complicated.
-
-```bash
-cat > $layers/display-count.toml <<TOML
-launch = true
-TOML
-```
-
-This tells `pack build` that we want our work (the `bin/display-count` script for example) to be included in the final, launchable OCI.
-
-```bash
-cat > $layers/launch.toml <<TOML
-[[processes]]
-command = "display-count"
-type = "web"
-TOML
-```
-
-Finally, we propose a launch command for the OCI (unless a subsequent buildpack overrides our proposed `web` process).
-
-This means that our `docker run playtime` command above is ultimately running the `display-count` executable we created above.
+The `display-count` executable will be automatically available in the `$PATH`, as a layer's `<name>/bin` folder (`$layers/fizzbuzz/bin` above) will automatically be added to `$PATH` of each running container.
 
 We can confirm that our previously built `playtime` image does indeed include a `display-count` executable that's in the `$PATH`, by explicitly running it:
 
@@ -239,9 +214,20 @@ $ docker run playtime display-count
 15
 ```
 
-Currently, we are not seeing `fizz` nor `buzz`. Just numbers.
+We want `display-count` executable to be run automatically when our final OCI/docker image is run, so we declare a "web" process with the `launch.toml` file:
 
-Now we could solve the FizzBuzz challenge in our `bin/display-count` generated shell script. That's fine. We would have still 
+```toml
+[[processes]]
+command = "display-count"
+type = "web"
+```
+
+Finally, we need to tell `pack build` that our `$layers` changes should be included in the final OCI/docker image. We set the `launch = true` attribute in `fizzbuzz.toml`:
+
+```toml
+launch = true
+```
+
 ## Test buildpacks without builder
 
 ```plain
