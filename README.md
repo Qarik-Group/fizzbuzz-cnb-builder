@@ -6,14 +6,26 @@
 mkdir -p ~/workspace/fizzbuzz-app
 cd ~/workspace/fizzbuzz-app
 
-echo 3 > Count
+echo 1 > Count
 pack build fizzbuzz-app --builder starkandwayne/fizzbuzz-builder
+docker run fizzbuzz-app
+# => 1
+
+echo 3 > Count
+pack build fizzbuzz-app --builder starkandwayne/fizzbuzz-builder --no-pull
+docker run fizzbuzz-app
+# => fizz
 
 echo 5 > Count
-pack build fizzbuzz-app --builder starkandwayne/fizzbuzz-builder
+pack build fizzbuzz-app --builder starkandwayne/fizzbuzz-builder --no-pull
+docker run fizzbuzz-app
+# => buzz
 
 echo 15 > Count
-pack build fizzbuzz-app --builder starkandwayne/fizzbuzz-builder
+pack build fizzbuzz-app --builder starkandwayne/fizzbuzz-builder --no-pull
+docker run fizzbuzz-app
+# => fizzbuzz
+
 ```
 
 ## Test buildpacks without builder
