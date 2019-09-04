@@ -175,27 +175,23 @@ The `buildpacks/fizzbuzz-standalone/bin/detect` file shows how we did this with 
 #!/bin/bash
 
 [[ -f Count ]] || { echo "No Count file"; exit 1; }
-
-...
 ```
 
-The `bin/detect` script is run upon the provided application source folder, and we expect `Count` to exist in the root of this folder. If not, then the `display-count` buildpack cannot help this application.
+If the current directory -- the application source code -- does not have a `Count` file then print an error message and exit with code 1.
 
 ### bin/build
 
 The other required executable for every buildpack is `bin/build`. It can add a layer of software to the final image, can setup the runtime environment of running containers, can depend upon other buildpacks, and can propose a command to run when the OCI is launched.
 
-Our `buildpacks/fizzbuzz-standalone/bin/build` is written to just copy a set of files into a new layer of the final runnable OCI/docker image. The three important lines are:
+Our `buildpacks/fizzbuzz-standalone/bin/build` is written to just copy a set of files into the final runnable OCI/docker image.
 
 ```bash
-layer_dir=$1
-buildpack_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 cp -r $buildpack_dir/layer/* $layer_dir/
 ```
 
-TODO: [What about the application folder?] The "layer" directory, passed to `bin/build` as the first argument, is the only folder area that `bin/build` should modify.
+Many buildpacks will unpack large assets, such as programming languages, into the `$layer_dir`.
 
-The files placed into `$layer_dir` are copied from the buildpack's `layer` folder:
+In our `bin/build` the files placed into `$layer_dir` are copied from the buildpack's `layer` folder:
 
 ```plain
 ├── fizzbuzz
@@ -205,7 +201,7 @@ The files placed into `$layer_dir` are copied from the buildpack's `layer` folde
 └── launch.toml
 ```
 
-The `display-count` executable will be automatically available in the `$PATH`, as a layer's `<name>/bin` folder (`$layers/fizzbuzz/bin` above) will automatically be added to `$PATH` of each running container.
+The `display-count` executable will be automatically available in the `$PATH`, as a layer's `<name>/bin` folder (`$layer_dir/fizzbuzz/bin` above) will automatically be added to `$PATH` of each running container.
 
 We can confirm that our previously built `playtime` image does indeed include a `display-count` executable that's in the `$PATH`, by explicitly running it:
 
@@ -222,7 +218,7 @@ command = "display-count"
 type = "web"
 ```
 
-Finally, we need to tell `pack build` that our `$layers` changes should be included in the final OCI/docker image. We set the `launch = true` attribute in `fizzbuzz.toml`:
+Finally, we need to tell `pack build` that our `$layer_dir` changes should be included in the final OCI/docker image. We set the `launch = true` attribute in `fizzbuzz.toml`:
 
 ```toml
 launch = true
