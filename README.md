@@ -277,6 +277,10 @@ Finally, all our buildpacks require a common run image and build image:
   run-image = "cloudfoundry/run:base-cnb"
 ```
 
+At the time of writing, the Ubuntu Bionic-based images above (`:base-cnb` => Ubuntu Bionic) included the `yj` CLI, whereas `cflinuxfs3` images did not. They are also smaller images than `cflinuxfs3`-based images.
+
+Our runtime fizzbuzz application has very few dependencies -- `bash` shell -- but the build sequences (the `bin/detect` and `bin/build`) require `bash`, `jq`, and `yj`.
+
 ### Create a Builder image
 
 ```plain
