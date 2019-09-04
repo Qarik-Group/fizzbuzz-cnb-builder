@@ -26,17 +26,36 @@ TOML
 fi
 export PATH=$layers/tools/bin:$PATH
 
+echo "---> Calculating fizz and buzz"
+fizzbuzz_message=$(cat $plan | yj -t | jq -r '.entries // [] | map(.metadata.message) | join("")')
+
+# Scripts sourced by Bash before launch
+mkdir -p $layers/display-count/profile.d
+cat > $layers/display-count/profile.d/fizzbuzz_message.sh <<SHELL
+export FIZZBUZZ_MESSAGE="$fizzbuzz_message"
+SHELL
+
+if [[ ${fizzbuzz_message:-X} == "X" ]]; then
+  echo "     No fizz, no buzz, all number"
+else
+  echo "     Expect some fizz or some buzz or both"
+fi
+
+
 echo "---> Create launch process to display count on start"
 cat > $layers/display-count.toml <<TOML
 launch = true
 TOML
 
+# Binaries for launch and/or subsequent buildpacks
 mkdir -p $layers/display-count/bin
 cat > $layers/display-count/bin/display-count <<SHELL
 #!/bin/bash
 
-cat Count
+# Display \$FIZZBUZZ_MESSAGE, else Count value from app
+echo "\${FIZZBUZZ_MESSAGE:-$(cat Count)}"
 SHELL
+
 chmod +x $layers/display-count/bin/display-count
 
 cat > $layers/launch.toml <<TOML
@@ -44,17 +63,4 @@ cat > $layers/launch.toml <<TOML
 command = "display-count"
 type = "web"
 TOML
-
-echo "---> Calculating fizz and buzz"
-fizzbuzz_message=$(cat $plan | yj -t | jq -r '.entries // [] | map(.metadata.message) | join("")')
-if [[ ${fizzbuzz_message:-X} == "X" ]]; then
-  echo "     No fizz, no buzz, all number"
-else
-  echo "     Expect some fizz or some buzz or both"
-  cat > $layers/display-count/bin/display-count <<SHELL
-#!/bin/bash
-
-echo "${fizzbuzz_message}"
-SHELL
-fi
 
