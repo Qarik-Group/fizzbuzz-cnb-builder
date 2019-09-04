@@ -142,6 +142,38 @@ $ docker inspect playtime
 ...
 ```
 
+### `bin/detect`
+
+If we ran the `pack build --buildpack buildpacks/display-count` command upon another folder that didn't have a `Count` file then the buildpack would alert and fail:
+
+```plain
+$ pack build playtime \
+    --builder cloudfoundry/cnb:bionic \
+    --buildpack buildpacks/display-count \
+    --path .
+...
+===> DETECTING
+[detector] ======== Output: com.starkandwayne.buildpacks.playtime.display-count@1.0.0 ========
+[detector] No Count file
+[detector] Error: failed to detect: detection failed
+[detector] ======== Results ========
+[detector] err:  com.starkandwayne.buildpacks.playtime.display-count@1.0.0 (1)
+```
+
+The output includes an explanation `No Count file`. Indeed the local folder (from `--path .`) does not have a `Count` file.
+
+The `buildpacks/display-count/bin/detect` file shows how we did this with a shell script:
+
+```bash
+#!/bin/bash
+
+[[ -f Count ]] || { echo "No Count file"; exit 1; }
+
+...
+```
+
+The `bin/detect` script is run upon the provided application source folder, and we expect `Count` to exist in the root of this folder. If not, then the `display-count` buildpack cannot help this application.
+
 ## Test buildpacks without builder
 
 ```plain
