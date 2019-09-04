@@ -1,6 +1,34 @@
 # Solving FizzBuzz with Cloud Native Buildpacks
 
-## Simple demo
+In this project and README I'm going to introduce you to Cloud Native Buildpacks using the silliest method for solving FizzBuzz. Yeah.
+
+## FizzBuzz Coding Challenge
+
+Write a program that takes a sequence of numbers, 1, 2, 3. If the number is a multiple of three print "fizz", if the number is a multiple of five print "buzz", if its both print "fizzbuzz", or if its neither then print the number.
+
+The output might look like: 1, 2, fizz, 4, buzz, 6, ...
+
+## Cloud Native Buildpacks
+
+Buildpacks are a decade-old method for converting application source code or artifacts into a running application container image that originated at Heroku and the Cloud Foundry project.
+
+Cloud Native Buildpacks are the merging of lessons learn from Heroku and Cloud Foundry to bring buildpacks to everyone - Docker, Kubernetes, and more.
+
+A NodeJS application with its `package.json`, and either `package-lock.json` or `yarn.lock` files, will be automatically detected as such, have NodeJS installed, have the npm libraries downloaded, and the resulting image be ready to run anywhere that Docker images can be launched.
+
+## Solving FizzBuzz with Buildpacks
+
+Ok, this is were I abuse the FizzBuzz problem. Here's how we're going to solve this whilst using and explaining Cloud Native Buildpacks (CNBs, or buildpacks, for short).
+
+Consider an application with a `Count` file containing an integer. When we "build" our application -- applying one or more CNBs to it -- the resulting image will print out that `Count` value and exit successfully.
+
+But, if the `Count` value is a multiple of 3, then instead of printing the number we want it to print `fizz`. Similarly, if the number is a multiple of 5 then print `buzz`. Or both. But no number.
+
+Instead of determining to print a number, `fizz`, `buzz`, or `fizzbuzz` at runtime, we will make the decision at the time we build the application image. What will be printed will be hard baked into the image based on the source `Count` file.
+
+### Simple demo
+
+Here is a working example that you can run now:
 
 ```plain
 mkdir -p ~/workspace/fizzbuzz-app
