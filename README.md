@@ -124,7 +124,23 @@ The **Building** stage allows the selected buildpacks to inject a layer into the
 
 Each buildpack implements this with a `bin/build` executable.
 
-The **Exporting** stage generates an OCI, and optionally publishes to a registry for remote systems to use.
+The **Exporting** stage generates an OCI, adds metadata, and optionally publishes to a registry for remote systems to use.
+
+The `playtime` image contains an entrypoint, tags, and metadata from the `pack build` exporting stage:
+
+```plain
+$ docker inspect playtime
+...
+  "Entrypoint": [
+      "/cnb/lifecycle/launcher"
+  ],
+  "Labels": {
+      "io.buildpacks.build.metadata": "{...}",
+      "io.buildpacks.lifecycle.metadata": "{...}",
+      "io.buildpacks.stack.id": "io.buildpacks.stacks.bionic"
+  }
+...
+```
 
 ## Test buildpacks without builder
 
