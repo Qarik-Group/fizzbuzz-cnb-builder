@@ -3,9 +3,9 @@ api = "0.2"
 
 # Buildpack ID and metadata
 [buildpack]
-id = "com.starkandwayne.buildpacks.playtime.display-count-standalone"
+id = "com.starkandwayne.buildpacks.fizzbuzz-standalone"
 version = "1.0.0"
-name = "Display FizzBuzz Count Buildpack"
+name = "FizzBuzz Buildpack"
 
 # Stacks that the buildpack will work with
 [[stacks]]

@@ -7,7 +7,7 @@ set -eo pipefail
 layers=$1
 buildpack_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 
-echo "---> Display FizzBuzz Count Buildpack"
+echo "---> FizzBuzz Buildpack"
 
 echo "---> Copy files from buildpack"
 

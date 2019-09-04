@@ -69,7 +69,11 @@ That's the power of CNBs -- to convert your source code into a runnable applicat
 
 ### Introducing our FizzBuzz buildpacks
 
-I've solved this problem with three CNBs in order to explore multi-buildpack support, and how optional buildpacks can be used.
+I've solved this problem twice.
+
+The first time is with a single buildpack `buildpacks/fizzbuzz-standalone` that produces a runnable OCI which solves the fizzbuzz problem for the value in `Count`.
+
+The second solution explores CNB multi-buildpack support, and how optional buildpacks can be used:
 
 * `buildpacks/display-count` is the primary buildpack that produces a runnable OCI, if source code contains a `Count` file
 * `buildpacks/fizz` is a buildpack that detects if there is a `Count` file, and if its contents are a multiple of 3
@@ -236,6 +240,9 @@ $ docker run playtime display-count
 15
 ```
 
+Currently, we are not seeing `fizz` nor `buzz`. Just numbers.
+
+Now we could solve the FizzBuzz challenge in our `bin/display-count` generated shell script. That's fine. We would have still 
 ## Test buildpacks without builder
 
 ```plain
