@@ -228,6 +228,86 @@ launch = true
 
 NOTE: `pack create-builder` requires `pack` v0.4.0+ or built from source. v0.3.0 will not work.
 
+We can distribute our buildpack and make it readily available to anyone by creating a Builder.
+
+We first used a pre-existing public Builder in the initial demonstration of `pack build`:
+
+```plain
+pack build fizzbuzz-app --builder starkandwayne/fizzbuzz-builder
+```
+
+The Builder contains one or more buildpacks, and hopefully one of them can apply itself to the application source code.
+
+Some Builders contain dozens of buildpacks, such as the Cloud Foundry `cloudfoundry/cnb:cflinuxfs3`. To see what buildpacks are available in a Builder use `pack inspect-builder`:
+
+```plain
+pack inspect-builder cloudfoundry/cnb:cflinuxfs3
+```
+
+We will create a new Builder that only contains our `fizzbuzz-standalone` buildpack.
+
+The `builder-standalone.toml` describes our Builder.
+
+It specifies that only one buildpack be included, and the path to the buildpack:
+
+```toml
+[[buildpacks]]
+  id = "com.starkandwayne.buildpacks.fizzbuzz-standalone"
+  uri = "buildpacks/fizzbuzz-standalone"
+```
+
+The additional metadata, including version, for the buildpack are discovered from the buildpack's source folder or tarball.
+
+Whilst there is only one buildpack in our Builder, we need to describe it explicitly in a Builder Order Group:
+
+```toml
+[[order]]
+[[order.group]]
+  id = "com.starkandwayne.buildpacks.fizzbuzz-standalone"
+```
+
+We'll visit `[[order.group]]` later when we solve FizzBuzz again using multiple buildpacks.
+
+Finally, all our buildpacks require a common run image and build image:
+
+```toml
+[stack]
+  id = "io.buildpacks.stacks.bionic"
+  build-image = "cloudfoundry/build:base-cnb"
+  run-image = "cloudfoundry/run:base-cnb"
+```
+
+### Create a Builder image
+
+```plain
+pack create-builder \
+  starkandwayne/fizzbuzz-standalone-builder \
+  -b builder-standalone.toml
+```
+
+Once completed, our local Builder image `starkandwayne/fizzbuzz-standalone-builder` can be used to build our fixture applications:
+
+```plain
+pack build playtime --builder starkandwayne/fizzbuzz-standalone-builder \
+  --path fixtures/fiften
+docker run playtime
+# => fizzbuzz
+
+pack build playtime --builder starkandwayne/fizzbuzz-standalone-builder \
+  --path fixtures/five
+docker run playtime
+# => buzz
+
+pack build playtime --builder starkandwayne/fizzbuzz-standalone-builder \
+  --path fixtures/one
+docker run playtime
+# => 1
+```
+
+## Multi-buildpack Builder
+
+NOTE: `pack create-builder` requires `pack` v0.4.0+ or built from source. v0.3.0 will not work.
+
 ### Create builder with buildpacks
 
 ```plain
