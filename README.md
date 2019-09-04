@@ -189,7 +189,7 @@ Our `buildpacks/fizzbuzz-standalone/bin/build` is written to just copy a set of 
 cp -r $buildpack_dir/layer/* $layer_dir/
 ```
 
-Many buildpacks will unpack large assets, such as programming languages, into the `$layer_dir`.
+Many buildpacks will unpack large assets, such as programming language compilers or intepreters, into the `$layer_dir`.
 
 In our `bin/build` the files placed into `$layer_dir` are copied from the buildpack's `layer` folder:
 
