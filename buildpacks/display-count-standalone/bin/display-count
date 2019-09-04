@@ -1,0 +1,13 @@
+#!/bin/bash
+
+count=$(cat Count)
+
+if [[ $(( $count % 15 )) == "0" ]]; then
+  echo "fizzbuzz"
+elif [[ $(( $count % 5 )) == "0" ]]; then
+  echo "buzz"
+elif [[ $(( $count % 3 )) == "0" ]]; then
+  echo "fizz"
+else
+  echo $count
+fi

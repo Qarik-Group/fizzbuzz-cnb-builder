@@ -16,7 +16,7 @@ Cloud Native Buildpacks are the merging of lessons learn from Heroku and Cloud F
 
 A NodeJS application with its `package.json`, and either `package-lock.json` or `yarn.lock` files, will be automatically detected as such, have NodeJS installed, have the npm libraries downloaded, and the resulting image be ready to run anywhere that Docker images can be launched.
 
-## Solving FizzBuzz with Buildpacks
+## Solving FizzBuzz with a Buildpack
 
 Ok, this is were I abuse the FizzBuzz problem. Here's how we're going to solve this whilst using and explaining Cloud Native Buildpacks (CNBs, or buildpacks, for short).
 
