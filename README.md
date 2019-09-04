@@ -55,7 +55,7 @@ docker run fizzbuzz-app
 # => fizzbuzz
 ```
 
-In each example our trivial source code containing only `Count` file has become a runnable Open Container Image (OCI), or Docker image.
+In each example above, the trivial source code contains only a `Count` file, but is convert into a runnable Open Container Image (OCI), or Docker image.
 
 That's the power of CNBs -- to convert your source code into a runnable application. In the example above it is a short-lived application that prints a number or word. Commonly, CNBs are used on long-lived web applications. Either is good.
 
