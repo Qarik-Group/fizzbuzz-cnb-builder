@@ -9,6 +9,4 @@ buildpack_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 
 echo "---> FizzBuzz Buildpack"
 
-echo "---> Copy files from buildpack"
-
 cp -r $buildpack_dir/layer/* $layer_dir/

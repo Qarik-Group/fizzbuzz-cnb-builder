@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo "${FIZZBUZZ_MESSAGE:-$(cat Count)}"
