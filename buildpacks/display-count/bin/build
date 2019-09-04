@@ -10,22 +10,6 @@ plan=$3
 
 echo "---> Display FizzBuzz Count Buildpack"
 
-if [[ -f $layers/tools.toml ]] ; then
-  echo "---> Reusing useful tools"
-else
-  echo "---> Download some useful tools"
-  rm -rf $layers/tools
-  mkdir -p $layers/tools/bin
-  wget -qO $layers/tools/bin/yj https://github.com/sclevine/yj/releases/download/v4.0.0/yj-linux && chmod +x $layers/tools/bin/yj
-  cat > "$layers/tools.toml" <<-TOML
-cache = true
-build = false
-launch = false
-yj = "4.0.0"
-TOML
-fi
-export PATH=$layers/tools/bin:$PATH
-
 echo "---> Calculating fizz and buzz"
 fizzbuzz_message=$(cat $plan | yj -t | jq -r '.entries // [] | map(.metadata.message) | join("")')
 

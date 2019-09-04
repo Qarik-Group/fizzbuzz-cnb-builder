@@ -30,6 +30,6 @@ description = "fizz buzz buildpack detection at its best"
     optional = true
 
 [stack]
-  id = "org.cloudfoundry.stacks.cflinuxfs3"
-  build-image = "cloudfoundry/cnb-build:cflinuxfs3"
-  run-image = "cloudfoundry/cnb-run:cflinuxfs3"
+  id = "io.buildpacks.stacks.bionic"
+  build-image = "cloudfoundry/build:base-cnb"
+  run-image = "cloudfoundry/run:base-cnb"
