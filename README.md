@@ -53,7 +53,56 @@ echo 15 > Count
 pack build fizzbuzz-app --builder starkandwayne/fizzbuzz-builder --no-pull
 docker run fizzbuzz-app
 # => fizzbuzz
+```
 
+In each example our trivial source code containing only `Count` file has become a runnable Open Container Image (OCI), or Docker image.
+
+That's the power of CNBs -- to convert your source code into a runnable application. In the example above it is a short-lived application that prints a number or word. Commonly, CNBs are used on long-lived web applications. Either is good.
+
+### Introducing our FizzBuzz buildpacks
+
+I've solved this problem with three CNBs in order to explore multi-buildpack support, and how optional buildpacks can be used.
+
+* `buildpacks/display-count` is the primary buildpack that produces a runnable OCI, if source code contains a `Count` file
+* `buildpacks/fizz` is a buildpack that detects if there is a `Count` file, and if its contents are a multiple of 3
+* `buildpacks/buzz` is a buildpack that detects if there is a `Count` file, and if its contents are a multiple of 5
+
+Let's try out `display-count` and see that it can convert any of our `fixtures` applications, each with a `Count` file, into a running application that merely prints out the `Count` value.
+
+Some of the output is included below for discussion:
+
+```plain
+$ pack build playtime \
+    --builder cloudfoundry/cnb:bionic \
+    --buildpack buildpacks/display-count \
+    --path fixtures/fifteen
+Selected run image cloudfoundry/run:base-cnb
+fetching buildpack from buildpacks/display-count
+adding buildpack com.starkandwayne.buildpacks.playtime.display-count version 1.0.0 to builder
+Executing lifecycle version 0.4.0
+===> DETECTING
+[detector] ======== Results ========
+[detector] pass: com.starkandwayne.buildpacks.playtime.display-count@1.0.0
+[detector] Resolving plan... (try #1)
+[detector] Success! (1)
+...
+===> BUILDING
+[builder] ---> Display FizzBuzz Count Buildpack
+[builder] ---> Calculating fizz and buzz
+[builder]      No fizz, no buzz, all number
+[builder] ---> Create launch process to display count on start
+===> EXPORTING
+...
+[exporter] *** Images:
+[exporter]       index.docker.io/library/playtime:latest - succeeded
+...
+```
+
+The local `playtime` image is runnable and displays the `Count` value from the `fixtures/fifteen` source folder:
+
+```plain
+$ docker run playtime
+15
 ```
 
 ## Test buildpacks without builder
