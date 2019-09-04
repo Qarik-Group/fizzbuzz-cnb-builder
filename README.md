@@ -79,31 +79,30 @@ The second solution explores CNB multi-buildpack support, and how optional build
 * `buildpacks/fizz` is a buildpack that detects if there is a `Count` file, and if its contents are a multiple of 3
 * `buildpacks/buzz` is a buildpack that detects if there is a `Count` file, and if its contents are a multiple of 5
 
-Let's try out `display-count` and see that it can convert any of our `fixtures` applications, each with a `Count` file, into a running application that merely prints out the `Count` value.
+### All-in-one fizzbuzz-standalone
+
+Let's try out `buildpacks/fizzbuzz-standalone` and see that it can convert any of our `fixtures` test applications, each with a `Count` file, into a running application that solves the FizzBuzz problem for the value in the `Count` file of the source application.
 
 Some of the output is included below for discussion:
 
 ```plain
 $ pack build playtime \
     --builder cloudfoundry/cnb:bionic \
-    --buildpack buildpacks/display-count \
+    --buildpack buildpacks/fizzbuzz-standalone \
     --path fixtures/fifteen
 ...
 Selected run image cloudfoundry/run:base-cnb
-fetching buildpack from buildpacks/display-count
-adding buildpack com.starkandwayne.buildpacks.playtime.display-count version 1.0.0 to builder
+fetching buildpack from buildpacks/fizzbuzz-standalone
+adding buildpack com.starkandwayne.buildpacks.fizzbuzz-standalone version 1.0.0 to builder
 Executing lifecycle version 0.4.0
 ===> DETECTING
 [detector] ======== Results ========
-[detector] pass: com.starkandwayne.buildpacks.playtime.display-count@1.0.0
-[detector] Resolving plan... (try #1)
+[detector] pass: com.starkandwayne.buildpacks.fizzbuzz-standalone@1.0.0[detector] Resolving plan... (try #1)
 [detector] Success! (1)
 ...
 ===> BUILDING
-[builder] ---> Display FizzBuzz Count Buildpack
-[builder] ---> Calculating fizz and buzz
-[builder]      No fizz, no buzz, all number
-[builder] ---> Create launch process to display count on start
+[builder] ---> FizzBuzz Buildpack
+[builder] ---> Copy files from buildpack
 ===> EXPORTING
 ...
 [exporter] *** Images:
@@ -150,25 +149,25 @@ $ docker inspect playtime
 
 The first require executable of every CNB is `bin/detect`. It determines if this buildpack can be helpful to the provided application source code.
 
-If we ran the `pack build --buildpack buildpacks/display-count` command upon another folder that didn't have a `Count` file then the buildpack would alert and fail:
+If we ran the `pack build --buildpack buildpacks/fizzbuzz-standalone` command upon another folder that didn't have a `Count` file then the buildpack would alert and fail:
 
 ```plain
 $ pack build playtime \
     --builder cloudfoundry/cnb:bionic \
-    --buildpack buildpacks/display-count \
+    --buildpack buildpacks/fizzbuzz-standalone \
     --path .
 ...
 ===> DETECTING
-[detector] ======== Output: com.starkandwayne.buildpacks.playtime.display-count@1.0.0 ========
+[detector] ======== Output: com.starkandwayne.buildpacks.fizzbuzz-standalone@1.0.0 ========
 [detector] No Count file
 [detector] Error: failed to detect: detection failed
 [detector] ======== Results ========
-[detector] err:  com.starkandwayne.buildpacks.playtime.display-count@1.0.0 (1)
+[detector] err:  com.starkandwayne.buildpacks.fizzbuzz-standalone@1.0.0 (1)
 ```
 
 The output includes an explanation `No Count file`. Indeed the local folder (from `--path .`) does not have a `Count` file.
 
-The `buildpacks/display-count/bin/detect` file shows how we did this with a shell script:
+The `buildpacks/fizzbuzz-standalone/bin/detect` file shows how we did this with a shell script:
 
 ```bash
 #!/bin/bash
@@ -180,7 +179,7 @@ The `buildpacks/display-count/bin/detect` file shows how we did this with a shel
 
 The `bin/detect` script is run upon the provided application source folder, and we expect `Count` to exist in the root of this folder. If not, then the `display-count` buildpack cannot help this application.
 
-### bin/build
+### bin/build TODO
 
 The other required executable for every buildpack is `bin/build`. It can add a layer of software to the final image, can setup the runtime environment of running containers, can depend upon other buildpacks, and can propose a command to run when the OCI is launched.
 
