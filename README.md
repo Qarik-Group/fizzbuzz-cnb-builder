@@ -312,7 +312,13 @@ docker run playtime
 
 Let's look at new buildpack `print-message`, unrelated to FizzBuzz, that activates if an application contains a `Message` file, and when running it displays the contents of the file.
 
-### Explore print-message
+We'll use this `print-message` buildpack to introduce some new concepts:
+
+* Process types
+* Setting up the environment
+* Two buildpacks in same Builder
+
+### Explore print-message buildpack
 
 ### Two process types
 
@@ -340,11 +346,29 @@ hello world
 We can run the image with one of the alternate process types `task` in multiple ways:
 
 ```plain
-docker run playtime task
 docker run -e CNB_PROCESS_TYPE=task playtime
+docker run playtime task
 ```
 
-### Two buildpacks in same builder
+The `$CNB_PROCESS_TYPE` method is more future-proof and less susceptible to accidental errors with the latter. If a process type `task` exists, then it is run. If not, then it will attempt to run an executable from `$PATH` called `task`.
+
+### Setting up the environment
+
+Each buildpack can install shell scripts into its layer that will be run on start, prior to the process type (`web` or `task` above) or any other command is launched.
+
+To see this in action, our `print-message`-based `playtime` image from above has a `$MESSAGE` environment variable created during startup:
+
+```plain
+$ docker run playtime env
+...
+MESSAGE=hello world
+```
+
+The buildpack achieved this feat by installing `$layer_dir/print-message/profile.d/message.sh`. Any script in `profile.d` will be loaded into the environment before the container's primary process is launched.
+
+These `profile.d` scripts can be used to setup environment variables, create new configuration files, and more.
+
+### Two buildpacks in same Builder
 
 ```plain
 pack create-builder starkandwayne/fizzbuzz-printmessage-builder -b builder-fizzbuzz-printmessage.toml
