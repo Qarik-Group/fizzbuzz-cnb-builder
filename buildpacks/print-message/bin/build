@@ -1,0 +1,6 @@
+#!/bin/bash
+
+layer_dir=$1
+buildpack_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+
+cp -r $buildpack_dir/layer/* $layer_dir/

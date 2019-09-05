@@ -308,6 +308,48 @@ docker run playtime
 # => 1
 ```
 
+## Additional Buildpack, Same Builder
+
+Let's look at new buildpack `print-message`, unrelated to FizzBuzz, that activates if an application contains a `Message` file, and when running it displays the contents of the file.
+
+### Explore print-message
+
+### Two process types
+
+This buildpack offers two process types `web` and `task`.
+
+```toml
+[[processes]]
+type = "web"
+command = "display-message"
+
+[[processes]]
+type = "task"
+command = "show-message-twice"
+```
+
+As explained `display-message` executable prints the application's `Message`. The `show-message-twice` executable... prints the `Message` twice...
+
+By default, a `web` process type will be run:
+
+```plain
+$ docker run playtime
+hello world
+```
+
+We can run the image with one of the alternate process types `task` in multiple ways:
+
+```plain
+docker run playtime task
+docker run -e CNB_PROCESS_TYPE=task playtime
+```
+
+### Two buildpacks in same builder
+
+```plain
+pack create-builder starkandwayne/fizzbuzz-printmessage-builder -b builder-fizzbuzz-printmessage.toml
+```
+
 ## Multi-buildpack Builder
 
 NOTE: `pack create-builder` requires `pack` v0.4.0+ or built from source. v0.3.0 will not work.

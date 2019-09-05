@@ -1,0 +1,8 @@
+# the process we want to run by default
+[[processes]]
+type = "web"
+command = "display-message"
+
+[[processes]]
+type = "task"
+command = "show-message-twice"

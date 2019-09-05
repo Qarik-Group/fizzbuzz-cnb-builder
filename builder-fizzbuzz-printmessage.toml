@@ -1,0 +1,28 @@
+description = "fizz buzz standalone buildpack"
+
+[lifecycle]
+  version = "0.4.0"
+
+[[buildpacks]]
+  id = "com.starkandwayne.buildpacks.fizzbuzz-standalone"
+  uri = "buildpacks/fizzbuzz-standalone"
+
+[[buildpacks]]
+  id = "com.starkandwayne.buildpacks.print-message"
+  uri = "buildpacks/print-message"
+
+
+[[order]]
+
+  [[order.group]]
+    id = "com.starkandwayne.buildpacks.fizzbuzz-standalone"
+
+[[order]]
+
+  [[order.group]]
+    id = "com.starkandwayne.buildpacks.print-message"
+
+[stack]
+  id = "io.buildpacks.stacks.bionic"
+  build-image = "cloudfoundry/build:base-cnb"
+  run-image = "cloudfoundry/run:base-cnb"
