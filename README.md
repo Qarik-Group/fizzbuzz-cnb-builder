@@ -370,9 +370,52 @@ These `profile.d` scripts can be used to setup environment variables, create new
 
 ### Two buildpacks in same Builder
 
+We now have two buildpacks for two different type of source code - one creates a runnable image from a `Count` file, the other creates a runnable image from a `Message` file.
+
+We can create a single Builder with both buildpacks and it will automatically detect which buildpack to use for each type of source code.
+
 ```plain
 pack create-builder starkandwayne/fizzbuzz-printmessage-builder -b builder-fizzbuzz-printmessage.toml
 ```
+
+If we use our Builder against a `Count` application we get the fizzbuzz output:
+
+```plain
+pack build playtime --no-pull --builder starkandwayne/fizzbuzz-challenge-builder --path fixtures/fifteen
+docker run playtime
+# => fizzbuzz
+```
+
+If we use our Builder against a `Message` application we see the message printed:
+
+```plain
+pack build playtime --builder starkandwayne/fizzbuzz-challenge-builder --path fixtures/hello-world
+docker run playtime
+# => hello world
+```
+
+The `builder-fizzbuzz-printmessage.toml` file describes the combined Builder:
+
+* contains two `[[buildpacks]]` to ensure the two buildpacks are bundled into the Builder image
+* contains two `[[order]]` sections so that only one or the other buildpack is applied to any given application
+
+If an application contained both a `Count` and `Message` then the first `[[order]]` would win and that group of buildpacks (only one buildpack in each group here) would be applied to the application.
+
+The application `fixtures/fiften` contains both, and since the `[[order]]` containing `fizzbuzz-standalone` buildpack is first, it is the only buildpack (group) that is applied to the application:
+
+```plain
+$ pack build playtime --builder starkandwayne/fizzbuzz-challenge-builder --path fixtures/fifteen
+...
+===> DETECTING
+[detector] ======== Results ========
+[detector] pass: com.starkandwayne.buildpacks.fizzbuzz-standalone@1.0.0
+[detector] Resolving plan... (try #1)
+[detector] Success! (1)
+===> BUILDING
+[builder] ---> FizzBuzz Buildpack
+```
+
+We will learn even more soon about `[[order]]` when we look at multiple buildpacks per `[[order]]`.
 
 ## Multi-buildpack Builder
 
