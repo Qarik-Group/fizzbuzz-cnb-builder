@@ -352,6 +352,15 @@ docker run playtime task
 
 The `$CNB_PROCESS_TYPE` method is more future-proof and less susceptible to accidental errors with the latter. If a process type `task` exists, then it is run. If not, then it will attempt to run an executable from `$PATH` called `task`.
 
+Being explicit with `$CNB_PROCESS_TYPE` means you can a fast error if you request a missing process type, rather than accidentally run a command that exists:
+
+```plain
+$ docker run -e CNB_PROCESS_TYPE=date playtime
+Error: failed to launch: determine start command: process type date was not found
+$ docker run playtime date
+Thu Sep  5 02:08:57 UTC 2019
+```
+
 ### Setting up the environment
 
 Each buildpack can install shell scripts into its layer that will be run on start, prior to the process type (`web` or `task` above) or any other command is launched.
